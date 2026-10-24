@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>탐색기 열기</title>
+<style>
+  body { font-family: -apple-system, "Malgun Gothic", "Apple SD Gothic Neo", sans-serif; text-align: center; padding: 48px 16px; color: #1f2328; background: #f6f7f9; }
+  .sub { font-size: 15px; color: #6b7280; }
+  .name { font-size: 20px; font-weight: 600; margin: 10px 0 28px; word-break: keep-all; }
+  a.btn { display: inline-block; padding: 14px 28px; border-radius: 10px; background: #1d3a6e; color: #fff; text-decoration: none; font-size: 16px; }
+  .note { font-size: 13px; color: #6b7280; margin-top: 24px; line-height: 1.7; }
+</style>
+</head>
+<body>
+<!--
+  노션 사건의 「탐색기에서 열기」 링크용 중계 페이지.
+  주소의 # 뒤(예: #1.%20송무/홍길동%20대여금)는 브라우저 안에서만 쓰이고 서버로 전송되지 않습니다.
+  각 PC에 설치한 '탐색기 열기 도우미'(gfolder://)를 불러 G: 드라이브의 해당 폴더를 엽니다.
+-->
+<div class="sub" id="sub">탐색기에서 여는 중…</div>
+<div class="name" id="name"></div>
+<a class="btn" id="go" href="#" style="display:none">📂 탐색기에서 열기</a>
+<p class="note" id="note">폴더가 열리면 이 탭은 잠시 후 저절로 닫힙니다.<br>처음 한 번 "열기 허용" 창이 나오면 '항상 허용'에 체크 후 열기를 누르세요.<br>자동으로 열리지 않으면 위 버튼을 누르세요.</p>
+<script>
+(function () {
+  var rel = '';
+  try { rel = decodeURIComponent(location.hash.replace(/^#/, '')); } catch (e) {}
+  rel = rel.replace(/\\/g, '/').replace(/^\/+|\/+$/g, '');
+  var parts = rel.split('/');
+  var ok = rel && parts[0] === '1. 송무' && !parts.some(function (p) { return !p || p === '.' || p === '..'; });
+  if (!ok) {
+    document.getElementById('sub').textContent = '올바르지 않은 폴더 링크입니다.';
+    document.getElementById('note').style.display = 'none';
+    return;
+  }
+  var target = 'gfolder://open/' + parts.map(encodeURIComponent).join('/');
+  document.getElementById('name').textContent = parts[parts.length - 1];
+  var go = document.getElementById('go');
+  go.href = target;
+  go.style.display = 'inline-block';
+  function closeSoon() { setTimeout(function () { try { window.close(); } catch (e) {} }, 1500); }
+  go.addEventListener('click', closeSoon);
+  location.href = target; // 바로 도우미 호출
+  closeSoon();
+})();
+</script>
+</body>
+</html>
