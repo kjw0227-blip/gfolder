@@ -29,7 +29,7 @@
   try { rel = decodeURIComponent(location.hash.replace(/^#/, '')); } catch (e) {}
   rel = rel.replace(/\\/g, '/').replace(/^\/+|\/+$/g, '');
   var parts = rel.split('/');
-  var ok = rel && parts[0] === '1. 송무' && !parts.some(function (p) { return !p || p === '.' || p === '..'; });
+  var ok = rel && (parts[0] === '1. 송무' || parts[0] === '2. 자문') && !parts.some(function (p) { return !p || p === '.' || p === '..'; });
   if (!ok) {
     document.getElementById('sub').textContent = '올바르지 않은 폴더 링크입니다.';
     document.getElementById('note').style.display = 'none';
